@@ -208,7 +208,7 @@ namespace AudioTest
                 else if (playerType == typeof(WaveOut))
                 {
                     //WaveOut player = (WaveOut)playerObj;
-
+                    
                 }
             }
         }
@@ -266,8 +266,9 @@ namespace AudioTest
 
                 if (playerType == typeof(SoundPlayer))
                 {
-                    //SoundPlayer player = (SoundPlayer)playerObj;
-                    //player.Stop();
+                    SoundPlayer player = (SoundPlayer)playerObj;
+                    player.Stop();
+                    player.Play();
                 }
                 else if (playerType == typeof(MciPlayer))
                 {
@@ -314,6 +315,11 @@ namespace AudioTest
                 {
                     MciPlayer player = (MciPlayer)playerObj;
                     MessageBox.Show(player.GetState().ToString());
+                }
+                else if (playerType == typeof(WaveOut))
+                {
+                    WaveOut player = (WaveOut)playerObj;
+                    MessageBox.Show(player.PlaybackState.ToString());
                 }
             }
         }
@@ -433,8 +439,8 @@ namespace AudioTest
                         MciPlayer player = (MciPlayer)playerObj;
                         int position = player.GetPosition(), length = player.GetLength();
                         positionLabel.Text = $"{player.GetPosition()} / {player.GetLength()}";
-                        trackBar2.Value = position;
                         trackBar2.Maximum = length;
+                        trackBar2.Value = position;
                     }
                     else if (playerType == typeof(WaveOut))
                     {

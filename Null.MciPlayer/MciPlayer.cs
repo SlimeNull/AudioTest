@@ -149,11 +149,11 @@ namespace Null.MciPlayer
     }
     public enum PlaybackState
     {
+        Stopped,
         Playing,
         Paused,
-        Stopped,
 
-        Invalid,
+        Invalid = -1,
     }
     public class MciException : Exception
     {

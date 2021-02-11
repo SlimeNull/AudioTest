@@ -43,12 +43,9 @@ namespace AudioTest
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.button11 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
-            this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -59,8 +56,6 @@ namespace AudioTest
             timer1 = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -194,22 +189,9 @@ namespace AudioTest
             this.radioButton1.Text = "SoundPlayer";
             this.radioButton1.UseVisualStyleBackColor = true;
             // 
-            // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox2.Controls.Add(this.button11);
-            this.groupBox2.Controls.Add(this.button9);
-            this.groupBox2.Controls.Add(this.button5);
-            this.groupBox2.Location = new System.Drawing.Point(13, 289);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(120, 110);
-            this.groupBox2.TabIndex = 7;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "For MCI";
-            // 
             // button11
             // 
-            this.button11.Location = new System.Drawing.Point(6, 81);
+            this.button11.Location = new System.Drawing.Point(368, 142);
             this.button11.Name = "button11";
             this.button11.Size = new System.Drawing.Size(107, 23);
             this.button11.TabIndex = 10;
@@ -219,9 +201,9 @@ namespace AudioTest
             // 
             // button9
             // 
-            this.button9.Location = new System.Drawing.Point(6, 49);
+            this.button9.Location = new System.Drawing.Point(174, 142);
             this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(107, 23);
+            this.button9.Size = new System.Drawing.Size(75, 23);
             this.button9.TabIndex = 9;
             this.button9.Text = "Get Mode";
             this.button9.UseVisualStyleBackColor = true;
@@ -229,35 +211,13 @@ namespace AudioTest
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(6, 20);
+            this.button5.Location = new System.Drawing.Point(336, 113);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(107, 23);
             this.button5.TabIndex = 8;
             this.button5.Text = "Seek to start";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
-            // 
-            // trackBar1
-            // 
-            this.trackBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackBar1.Location = new System.Drawing.Point(13, 238);
-            this.trackBar1.Maximum = 1000;
-            this.trackBar1.Minimum = -1000;
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(552, 45);
-            this.trackBar1.TabIndex = 8;
-            // 
-            // button6
-            // 
-            this.button6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button6.Location = new System.Drawing.Point(490, 209);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(75, 23);
-            this.button6.TabIndex = 9;
-            this.button6.Text = "Seek";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // button7
             // 
@@ -293,9 +253,11 @@ namespace AudioTest
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.button11);
             this.splitContainer1.Panel2.Controls.Add(this.positionLabel);
+            this.splitContainer1.Panel2.Controls.Add(this.button5);
+            this.splitContainer1.Panel2.Controls.Add(this.button9);
             this.splitContainer1.Panel2.Controls.Add(this.label1);
-            this.splitContainer1.Panel2.Controls.Add(this.button6);
             this.splitContainer1.Panel2.Controls.Add(this.trackBar2);
             this.splitContainer1.Panel2.Controls.Add(this.button10);
             this.splitContainer1.Panel2.Controls.Add(this.button1);
@@ -304,9 +266,7 @@ namespace AudioTest
             this.splitContainer1.Panel2.Controls.Add(this.button7);
             this.splitContainer1.Panel2.Controls.Add(this.button3);
             this.splitContainer1.Panel2.Controls.Add(this.button4);
-            this.splitContainer1.Panel2.Controls.Add(this.trackBar1);
             this.splitContainer1.Panel2.Controls.Add(this.groupBox1);
-            this.splitContainer1.Panel2.Controls.Add(this.groupBox2);
             this.splitContainer1.Size = new System.Drawing.Size(776, 411);
             this.splitContainer1.SplitterDistance = 189;
             this.splitContainer1.TabIndex = 11;
@@ -339,9 +299,9 @@ namespace AudioTest
             // 
             // button10
             // 
-            this.button10.Location = new System.Drawing.Point(174, 142);
+            this.button10.Location = new System.Drawing.Point(255, 142);
             this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(156, 23);
+            this.button10.Size = new System.Drawing.Size(107, 23);
             this.button10.TabIndex = 11;
             this.button10.Text = "Get Position";
             this.button10.UseVisualStyleBackColor = true;
@@ -362,8 +322,6 @@ namespace AudioTest
             this.menuStrip1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
@@ -389,10 +347,7 @@ namespace AudioTest
         private System.Windows.Forms.RadioButton radioButton3;
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.RadioButton radioButton1;
-        private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.TrackBar trackBar1;
-        private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Button button9;
