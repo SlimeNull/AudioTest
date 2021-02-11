@@ -379,12 +379,6 @@ namespace AudioTest
                 SeekMusicToStart(path);
         }
 
-        private void button6_Click(object sender, EventArgs e)
-        {
-            if (CheckStringItem(listBox1.SelectedItem, out string path))
-                SeekMusic(path, trackBar1.Value);
-        }
-
         private void button7_Click(object sender, EventArgs e)
         {
             if (CheckStringItem(listBox1.SelectedItem, out string path))
