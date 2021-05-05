@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Null.AudioSync": {
+      "commandName": "Project",
+      "commandLineArgs": "host"
+    }
+  }
+}

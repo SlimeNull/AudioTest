@@ -140,7 +140,8 @@ namespace Null.MciPlayer
         }
         public void Dispose()
         {
-            Close();
+            if (aliasName != null)
+                Close();
         }
 
     }

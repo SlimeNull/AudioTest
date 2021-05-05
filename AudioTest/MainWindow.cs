@@ -12,9 +12,9 @@ using Null.MciPlayer;
 
 namespace AudioTest
 {
-    public partial class Form1 : Form
+    public partial class MainWindow : Form
     {
-        public Form1()
+        public MainWindow()
         {
             InitializeComponent();
         }
@@ -349,72 +349,67 @@ namespace AudioTest
             result = (string)obj;
             return true;
         }
-        private void button1_Click(object sender, EventArgs e)
+        private void RemoveMusic_Click(object sender, EventArgs e)
         {
             if (CheckStringItem(listBox1.SelectedItem, out string path))
                 RemoveMusic(path);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void PlayMusic_Click(object sender, EventArgs e)
         {
             if (CheckStringItem(listBox1.SelectedItem, out string path))
                 PlayMusic(path);
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void PauseMusic_Click(object sender, EventArgs e)
         {
             if (CheckStringItem(listBox1.SelectedItem, out string path))
                 PauseMusic(path);
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void StopMusic_Click(object sender, EventArgs e)
         {
             if (CheckStringItem(listBox1.SelectedItem, out string path))
                 StopMusic(path);
         }
 
-        private void button5_Click(object sender, EventArgs e)
+        private void SeekMusic_Click(object sender, EventArgs e)
         {
             if (CheckStringItem(listBox1.SelectedItem, out string path))
                 SeekMusicToStart(path);
         }
 
-        private void button7_Click(object sender, EventArgs e)
+        private void PlayMusicWait_Click(object sender, EventArgs e)
         {
             if (CheckStringItem(listBox1.SelectedItem, out string path))
                 PlayMusicWait(path);
         }
 
-        private void button8_Click(object sender, EventArgs e)
+        private void GetMusicLength_Click(object sender, EventArgs e)
         {
             if (CheckStringItem(listBox1.SelectedItem, out string path))
                 GetMusicLength(path);
         }
 
-        private void button9_Click(object sender, EventArgs e)
+        private void GetMusicMode_Click(object sender, EventArgs e)
         {
             if (CheckStringItem(listBox1.SelectedItem, out string path))
                 GetMusicMode(path);
         }
 
-        private void button10_Click(object sender, EventArgs e)
+        private void GetMusicPosition_Click(object sender, EventArgs e)
         {
             if (CheckStringItem(listBox1.SelectedItem, out string path))
                 GetMusicPosition(path);
         }
 
-        private void button11_Click(object sender, EventArgs e)
+        private void PlayMusicRepeat_Click(object sender, EventArgs e)
         {
             if (CheckStringItem(listBox1.SelectedItem, out string path))
                 PlayMusicRepeat(path);
         }
 
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
+        private void GlobalTimer_Tick(object sender, EventArgs e)
         {
             if (CheckStringItem(listBox1.SelectedItem, out string path))
             {
