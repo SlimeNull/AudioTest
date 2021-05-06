@@ -18,14 +18,16 @@ namespace NAudioRecordTest
     {
         static void Main(string[] args)
         {
-            //var reader = new Mp3FileReader(@"C:\Users\Null\Desktop\Disconnected - Pegboard Nerds.mp3");
+            var reader = new Mp3FileReader(@"C:\Users\Null\Desktop\Disconnected - Pegboard Nerds.mp3");
+            WaveFileWriter.CreateWaveFile(@"C:\Users\Null\Desktop\Disconnected - Pegboard Nerds.wav", reader);
             //// WaveFileReader waveFileReader = new WaveFileReader("");
             //WaveOut wout = new WaveOut();
 
             //wout.Init(reader);
             //wout.Play();
             //Console.ReadLine();
-
+            
+            //new StreamMediaFoundationReader();
             var cap = new WasapiCapture();
             //var cap = new WasapiLoopbackCapture();
             //var cap = new WaveInEvent();

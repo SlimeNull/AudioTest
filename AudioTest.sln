@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Null.AudioSync", "Null.Audi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioVisualizer", "AudioVisualizer\AudioVisualizer.csproj", "{C985AC7D-8E66-48C9-B20E-8B39F2E5070A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audio.Visualizer.Win", "Audio.Visualizer.Win\Audio.Visualizer.Win.csproj", "{2A6D6AC0-ADF2-402B-A055-3FB563214C88}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,10 +45,6 @@ Global
 		{C985AC7D-8E66-48C9-B20E-8B39F2E5070A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C985AC7D-8E66-48C9-B20E-8B39F2E5070A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C985AC7D-8E66-48C9-B20E-8B39F2E5070A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2A6D6AC0-ADF2-402B-A055-3FB563214C88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2A6D6AC0-ADF2-402B-A055-3FB563214C88}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2A6D6AC0-ADF2-402B-A055-3FB563214C88}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2A6D6AC0-ADF2-402B-A055-3FB563214C88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

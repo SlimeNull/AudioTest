@@ -6,6 +6,21 @@ using Null.MciPlayer;
 using Null.Library;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using NullLib.HttpWebHelper;
+using NAudio;
+using NAudio.Wave;
+using NAudio.Codecs;
+using NAudio.CoreAudioApi;
+using NAudio.FileFormats;
+using NAudio.MediaFoundation;
+using NAudio.Midi;
+using NAudio.Dsp;
+using NAudio.Utils;
+using NAudio.SoundFont;
+using NAudio.Dmo;
+using NAudio.Wave.Asio;
+using NAudio.Wave.SampleProviders;
+using NAudio.Wave.Compression;
 
 namespace TestConsole
 {
@@ -47,6 +62,13 @@ namespace TestConsole
         }
         static void Main(string[] args)
         {
+            MediaFoundationReader reader = new MediaFoundationReader(@"C:\Users\Null\Desktop\Disconnected - Pegboard Nerds.mp3");
+            WaveOut wout = new WaveOut();
+            wout.Init(reader);
+            wout.Play();
+
+            
+
             Console.Write("Input file path: ");
             player = new MciPlayer(Console.ReadLine().Trim('"'));
             player.Open();
