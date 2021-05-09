@@ -67,8 +67,6 @@ namespace TestConsole
             wout.Init(reader);
             wout.Play();
 
-            
-
             Console.Write("Input file path: ");
             player = new MciPlayer(Console.ReadLine().Trim('"'));
             player.Open();

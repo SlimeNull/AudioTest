@@ -6,9 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NAudio" Version="2.0.0" />
     <PackageReference Include="NullLib.ArgsAnalysis" Version="1.0.1" />
-    <PackageReference Include="NullLib.EventedSocket" Version="1.0.4" />
   </ItemGroup>
 
 </Project>

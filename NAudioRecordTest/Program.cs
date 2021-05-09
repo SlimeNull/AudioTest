@@ -33,7 +33,6 @@ namespace NAudioRecordTest
             //var cap = new WaveInEvent();
             WaveFileWriter writer = new WaveFileWriter("output.wav", cap.WaveFormat);
             
-            
             cap.DataAvailable += (s, args) =>
             {
                 float waveHeight = Enumerable
