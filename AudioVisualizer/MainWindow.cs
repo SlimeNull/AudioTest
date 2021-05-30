@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -22,29 +23,44 @@ namespace AudioVisualizer
         public MainWindow()
         {
             InitializeComponent();
+            InitializeCapture();
+
+            DrawPanel.Resize += DrawPanelResize;
+            DrawPanel.Paint += RenderPanel;
+
+            Timer timer = new Timer();
+            timer.Interval = 15;
+            timer.Tick += ProcessFrame;
+            //timer.Tick += RefreshPanel;
+            timer.Tick += RenderPanel;
+            timer.Tick += RefreshOffset;
+            timer.Tick += RefreshUIElement;
+            timer.Start();
+
+            ViewModule.DataSource = new MainWindowModule();
+
+            this.FormClosed += (sender, e) => Application.Exit();
+        }
+
+        private void RefreshPanel(object sender, EventArgs e)
+        {
+            DrawPanel.Invalidate();
+            DrawPanel.Update();
+        }
+
+        private void InitializeCapture()
+        {
+            capture?.Dispose();
 
             capture = new WasapiLoopbackCapture();
             capture.DataAvailable += SaveSamples;
             capture.DataAvailable += WriteFrame;
 
-            DrawPanel.Resize += DrawPanel_Resize;
-            DrawPanel.Paint += RenderFrame;
-
-            Timer timer = new Timer();
-            timer.Interval = 15;
-            timer.Tick += ProcessFrame;
-            timer.Tick += RenderFrame;
-            timer.Tick += RefreshOffset;
-            timer.Tick += RefreshPanels;
-            timer.Start();
-
             bitsPerSample = capture.WaveFormat.BitsPerSample;
             sampleRate = capture.WaveFormat.SampleRate;
             channelCount = capture.WaveFormat.Channels;
 
-            ViewModule.DataSource = new MainWindowModule();
-
-            this.FormClosed += (sender, e) => Application.Exit();
+            recording = false;
         }
 
         private void ConvertSamples(object sender, EventArgs e)
@@ -62,11 +78,12 @@ namespace AudioVisualizer
             }
         }
 
-        private void RefreshPanels(object sender, EventArgs e)
+        private void RefreshUIElement(object sender, EventArgs e)
         {
             //DrawPanel.Enabled = !playing;
             //MusicPlayPanel.Enabled = !recording;
             IsSaveFile.Enabled = !recording;
+            StartBtn.Text = recording ? "Stop" : "Start";
         }
 
         private void RefreshOffset(object sender, EventArgs e)
@@ -152,7 +169,7 @@ namespace AudioVisualizer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void DrawPanel_Resize(object sender, EventArgs e)
+        private void DrawPanelResize(object sender, EventArgs e)
         {
             if (bufferedGraphics == null)
                 return;
@@ -201,17 +218,20 @@ namespace AudioVisualizer
         /// </summary>
         /// <param name="s"></param>
         /// <param name="args"></param>
-        private void RenderFrame(object s, EventArgs args)
+        private void RenderPanel(object s, EventArgs args)
         {
             if (bufferedGraphics == null || bufferedGraphics.Graphics == null)
                 bufferedGraphics = BufferedGraphicsManager.Current.Allocate(DrawPanel.CreateGraphics(), DrawPanel.ClientRectangle);
-            if (DftData == null || DftData.Length == 0)
+            if (DftData == null || DftData.Length == 0 || frequencyPerIndex == 0)
                 return;
             lock (DftDataLock)
             {
+                Panel panel = s as Panel;
+
                 int hz2500index = (int)(2500d / frequencyPerIndex);
                 double[] resultPaint = DftData.Take(hz2500index).ToArray();
                 Graphics g = bufferedGraphics.Graphics;
+                //panel.SuspendLayout();
                 g.Clear(DrawPanel.BackColor);
                 float 
                     dataRight = resultPaint.Length,
@@ -255,7 +275,7 @@ namespace AudioVisualizer
                         .Select(j => Samples[i + j * channelCount])
                         .ToArray())
                     .ToArray();
-
+            
             float[] chanelAverageSamples = Enumerable
                 .Range(0, chanelSamples[0].Length)
                 .Select(i => Enumerable
@@ -315,20 +335,14 @@ namespace AudioVisualizer
         {
             if (recording)
             {
-                if (capture.CaptureState != NAudio.CoreAudioApi.CaptureState.Capturing)
-                    return;
                 if (writer != null)
                     writer.Close();
                 capture.StopRecording();
                 if (IsSaveFile.Checked)
-                    FileNameContent.Text += "(已保存)";
-
-                (sender as Button).Text = "Start";
+                    FileNameContent.Text += "(Saved)";
             }
             else
             {
-                if (capture.CaptureState == NAudio.CoreAudioApi.CaptureState.Capturing)
-                    return;
                 if (bufferedGraphics == null)
                     bufferedGraphics = BufferedGraphicsManager.Current.Allocate(DrawPanel.CreateGraphics(), DrawPanel.ClientRectangle);
                 if (IsSaveFile.Checked)
@@ -338,8 +352,6 @@ namespace AudioVisualizer
                     FileNameContent.Text = filename;
                 }
                 capture.StartRecording();
-
-                (sender as Button).Text = "Stop";
             }
 
             recording ^= true;
@@ -350,6 +362,8 @@ namespace AudioVisualizer
         {
             ofd ??= new OpenFileDialog()
             {
+                Title = "Select a audio file.",
+                Multiselect = false,
                 Filter = "Audio|*.wav;*.mp3;*.aiff;*.cue|Wave file|*.wav|MPEG3|*.mp3|AIFF|*.aiff|Cue Wave|*.cue",
                 CheckFileExists = true,
             };
@@ -410,5 +424,7 @@ namespace AudioVisualizer
             wout?.Stop();
             playing = false;
         }
+
+        private void RefreshBtn_Click(object sender, EventArgs e) => InitializeCapture();
     }
 }

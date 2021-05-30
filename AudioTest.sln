@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Null.AudioSync", "Null.Audi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioVisualizer", "AudioVisualizer\AudioVisualizer.csproj", "{C985AC7D-8E66-48C9-B20E-8B39F2E5070A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beep", "Beep\Beep.csproj", "{A3772475-4F6B-4BF5-8FF2-0E2914D82B56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beep", "Beep\Beep.csproj", "{A3772475-4F6B-4BF5-8FF2-0E2914D82B56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NullLib.AudioVisualization", "NullLib.AudioVisualization\NullLib.AudioVisualization.csproj", "{5F2E9452-C01B-4EDF-895E-9CCC1FE4EAD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{A3772475-4F6B-4BF5-8FF2-0E2914D82B56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3772475-4F6B-4BF5-8FF2-0E2914D82B56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3772475-4F6B-4BF5-8FF2-0E2914D82B56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F2E9452-C01B-4EDF-895E-9CCC1FE4EAD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F2E9452-C01B-4EDF-895E-9CCC1FE4EAD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F2E9452-C01B-4EDF-895E-9CCC1FE4EAD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F2E9452-C01B-4EDF-895E-9CCC1FE4EAD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

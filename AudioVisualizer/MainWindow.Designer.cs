@@ -32,6 +32,7 @@ namespace AudioVisualizer
             this.components = new System.ComponentModel.Container();
             this.StartBtn = new System.Windows.Forms.Button();
             this.DrawPanel = new System.Windows.Forms.Panel();
+            this.RefreshBtn = new System.Windows.Forms.Button();
             this.FileNameContent = new System.Windows.Forms.Label();
             this.IsSaveFile = new System.Windows.Forms.CheckBox();
             this.ViewModule = new System.Windows.Forms.BindingSource(this.components);
@@ -69,6 +70,7 @@ namespace AudioVisualizer
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.DrawPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.DrawPanel.Controls.Add(this.RefreshBtn);
             this.DrawPanel.Controls.Add(this.StartBtn);
             this.DrawPanel.Controls.Add(this.FileNameContent);
             this.DrawPanel.Controls.Add(this.IsSaveFile);
@@ -76,6 +78,17 @@ namespace AudioVisualizer
             this.DrawPanel.Name = "DrawPanel";
             this.DrawPanel.Size = new System.Drawing.Size(682, 433);
             this.DrawPanel.TabIndex = 2;
+            // 
+            // RefreshBtn
+            // 
+            this.RefreshBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.RefreshBtn.Location = new System.Drawing.Point(523, 2);
+            this.RefreshBtn.Name = "RefreshBtn";
+            this.RefreshBtn.Size = new System.Drawing.Size(75, 23);
+            this.RefreshBtn.TabIndex = 0;
+            this.RefreshBtn.Text = "Refresh";
+            this.RefreshBtn.UseVisualStyleBackColor = true;
+            this.RefreshBtn.Click += new System.EventHandler(this.RefreshBtn_Click);
             // 
             // FileNameContent
             // 
@@ -232,6 +245,7 @@ namespace AudioVisualizer
             this.ClientSize = new System.Drawing.Size(974, 457);
             this.Controls.Add(this.MusicPlayPanel);
             this.Controls.Add(this.DrawPanel);
+            this.DoubleBuffered = true;
             this.Name = "MainWindow";
             this.Text = "Null.AudioVisualizer";
             this.DrawPanel.ResumeLayout(false);
@@ -262,6 +276,7 @@ namespace AudioVisualizer
         private System.Windows.Forms.Label CurrentTimeLb;
         private System.Windows.Forms.Label MusicNameLb;
         private System.Windows.Forms.Button StopBtn;
+        private System.Windows.Forms.Button RefreshBtn;
     }
 }
 
