@@ -5,13 +5,17 @@ using System.Text;
 
 namespace AudioVisualizer.ViewModule
 {
-    class MainWindowModule : INotifyPropertyChanged
+    public class MainWindowModule : INotifyPropertyChanged
     {
-        public bool IsSaveFile { get; set; }
-        public string Filename { get; set; }
+        public bool IsSaveFile;
+        public string Filename;
 
-        public bool IsRecording { get; set; }
-        public bool IsPlaying { get; set; }
+        public bool IsRecording;
+        public bool IsPlaying;
+        public bool IsOffseting;
+
+        public int RefreshInterval { get; set; }
+
 
         public void OnPropertyChanged(string propName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
         public event PropertyChangedEventHandler PropertyChanged;

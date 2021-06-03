@@ -111,7 +111,7 @@ namespace NullLib.AudioVisualization
 
         private void OnDataAvailable()
         {
-            DataAvailable?.Invoke(this, new AudioVisualizerDataAvailableEventArgs(currentData, currentDataLen, ));
+            //DataAvailable?.Invoke(this, new AudioVisualizerDataAvailableEventArgs(currentData, currentDataLen, ));
         }
 
         private void RefreshBuffer()

@@ -20,10 +20,14 @@ namespace AudioVisualizer
 {
     public partial class MainWindow : Form
     {
+        public MainWindowModule ViewModule;
+
         public MainWindow()
         {
             InitializeComponent();
             InitializeCapture();
+
+            this.ViewModule = new MainWindowModule();
 
             DrawPanel.Resize += DrawPanelResize;
             DrawPanel.Paint += RenderPanel;
@@ -37,17 +41,13 @@ namespace AudioVisualizer
             timer.Tick += RefreshUIElement;
             timer.Start();
 
-            ViewModule.DataSource = new MainWindowModule();
-
             this.FormClosed += (sender, e) => Application.Exit();
         }
-
         private void RefreshPanel(object sender, EventArgs e)
         {
             DrawPanel.Invalidate();
             DrawPanel.Update();
         }
-
         private void InitializeCapture()
         {
             capture?.Dispose();
@@ -59,13 +59,10 @@ namespace AudioVisualizer
             bitsPerSample = capture.WaveFormat.BitsPerSample;
             sampleRate = capture.WaveFormat.SampleRate;
             channelCount = capture.WaveFormat.Channels;
-
-            recording = false;
         }
-
         private void ConvertSamples(object sender, EventArgs e)
         {
-            if (playing && reader != null)
+            if (ViewModule.IsPlaying && reader != null)
             {
                 byte[] buffer = new byte[4096 * 4];
                 long position = reader.Position;
@@ -77,18 +74,16 @@ namespace AudioVisualizer
                     .ToArray();
             }
         }
-
         private void RefreshUIElement(object sender, EventArgs e)
         {
             //DrawPanel.Enabled = !playing;
             //MusicPlayPanel.Enabled = !recording;
-            IsSaveFile.Enabled = !recording;
-            StartBtn.Text = recording ? "Stop" : "Start";
+            IsSaveFile.Enabled = !ViewModule.IsRecording;
+            StartBtn.Text = ViewModule.IsRecording ? "Stop" : "Start";
         }
-
         private void RefreshOffset(object sender, EventArgs e)
         {
-            if (reader != null && !offseting)
+            if (reader != null && !ViewModule.IsOffseting)
             {
                 PlayOffsetBar.Minimum = 0;
                 PlayOffsetBar.Maximum = (int)reader.TotalTime.TotalMilliseconds;
@@ -108,7 +103,6 @@ namespace AudioVisualizer
         BufferedGraphics bufferedGraphics;
         Func<float, float> dftDataFilter;
 
-        float multiple = 1;
         int bitsPerSample;
         int sampleRate;
         int channelCount;
@@ -120,10 +114,6 @@ namespace AudioVisualizer
         object SamplesLock = new object();
         object DftDataLock = new object();
 
-        bool recording = false;    // 是否正在录制
-        bool playing = false;
-        bool offseting = false;
-
         /// <summary>
         /// 生成一个适用于过滤绘制数据的委托, 它可以压制绘制数据在一定范围内 (原理是激活函数)
         /// </summary>
@@ -134,8 +124,8 @@ namespace AudioVisualizer
         /// <returns></returns>
         private Func<float, float> GenDataFilter(float xmin, float xmax, float ymin, float ymax)
         {
-            Func<float, float> sigmoid = (z) => 1f / (1f + MathF.Pow(MathF.E, (-z)));
-            return (num) => (MathF.Tanh((num - xmin) / (xmax - xmin) * 2)) * (ymax - ymin) + ymin;
+            Func<float, float> sigmoid = (z) => (float)(1f / (1f + Math.Pow(Math.E, (-z))));
+            return (num) => (float)(Math.Tanh((num - xmin) / (xmax - xmin) * 2) * (ymax - ymin) + ymin);
         }
 
         /// <summary>
@@ -161,7 +151,8 @@ namespace AudioVisualizer
         /// <param name="e"></param>
         private void WriteFrame(object sender, WaveInEventArgs e)
         {
-            writer?.Write(e.Buffer, 0, e.BytesRecorded);
+            if (ViewModule.IsRecording)
+                writer?.Write(e.Buffer, 0, e.BytesRecorded);
         }
 
         /// <summary>
@@ -213,6 +204,8 @@ namespace AudioVisualizer
             return IndexCurvePoint(sequence, percent * sequence.Length);
         }
 
+        Action drawAction;
+
         /// <summary>
         /// 根据 DftData, 将频谱绘制到窗体
         /// </summary>
@@ -224,37 +217,132 @@ namespace AudioVisualizer
                 bufferedGraphics = BufferedGraphicsManager.Current.Allocate(DrawPanel.CreateGraphics(), DrawPanel.ClientRectangle);
             if (DftData == null || DftData.Length == 0 || frequencyPerIndex == 0)
                 return;
+            drawAction ??= MusicCircleVisualDraw;
             lock (DftDataLock)
             {
-                Panel panel = s as Panel;
-
-                int hz2500index = (int)(2500d / frequencyPerIndex);
-                double[] resultPaint = DftData.Take(hz2500index).ToArray();
-                Graphics g = bufferedGraphics.Graphics;
-                //panel.SuspendLayout();
-                g.Clear(DrawPanel.BackColor);
-                float 
-                    dataRight = resultPaint.Length,
-                    panelRight = DrawPanel.Width,
-                    panelHeight = DrawPanel.Height;
-                //PointF[] points = 
-                //    new PointF[] { new PointF(0, panelHeight) }.Concat(
-                //        Enumerable.Range(0, resultPaint.Length).Select(i =>
-                //            new PointF((int)(i / dataRight * panelRight), panelHeight - (float)resultPaint[i] * multiple)))
-                //    .Concat(new PointF[] { new PointF(panelRight, panelHeight) })
-                //    .ToArray();
-                //dftDataFilter ??= GenDataFilter(0, dataRight, 0, panelHeight / 2);
-                dftDataFilter ??= (v) => v;
-                PointF[] points = Enumerable.Range(0, resultPaint.Length).Select(i =>
-                    new PointF(
-                        (int)(i / dataRight * panelRight),
-                        panelHeight - dftDataFilter((float)resultPaint[i] * multiple)))
-                    .ToArray();
-                g.DrawCurve(Pens.Purple, points, 1);
-                //g.FillClosedCurve(Brushes.Purple, points, FillMode.Alternate, 1);
-                //g.FillClosedCurve(Brushes.Purple, points, FillMode.Winding, 1);
+                bufferedGraphics.Graphics.Clear(DrawPanel.BackColor);
+                //DarkerRender(DrawPanel.BackColor);
+                //ColorRender(Color.Black, Color.Purple);
+                MusicLineVisualDraw();
+                MusicCircleVisualDraw();
                 bufferedGraphics.Render();
             }
+        }
+
+        double darkRate = 0.5;
+        private void DarkerRender(Color color)
+        {
+            Graphics g = bufferedGraphics.Graphics;
+            g.FillRectangle(new SolidBrush(Color.FromArgb((int)(255 * darkRate), color.R, color.G, color.B)), DrawPanel.ClientRectangle);
+        }
+
+        double maxNow;
+        int penWidth = 1;
+        private void ColorRender(Color color1, Color color2)
+        {
+            int fqEndIndex = (int)(circleFrequencyEnd / frequencyPerIndex);
+            double[] resultPaint = DftData.Take(fqEndIndex).ToArray();
+            Graphics g = bufferedGraphics.Graphics;
+            double average = resultPaint.Average();
+            if (maxNow < average)
+                maxNow = average;
+            double light = average / maxNow;
+            Pen pen = new Pen(Color.FromArgb((int)(color1.R + (color2.R - color1.R) * light),
+                                             (int)(color1.G + (color2.G - color1.G) * light),
+                                             (int)(color1.B + (color2.B - color1.B) * light)));
+            pen.Width = penWidth;
+            Rectangle rect = DrawPanel.ClientRectangle;
+            g.DrawLines(pen, new Point[]
+            {
+                new Point(rect.X, rect.Y),
+                new Point(rect.X, rect.Height - 1),
+                new Point(rect.Width - 1, rect.Height - 1),
+                new Point(rect.Width - 1, rect.Y),
+                new Point(rect.X, rect.Y),
+            });
+        }
+
+        Pen globalDrawPen = Pens.Green;
+
+        float curveMultiple = 1;
+        double curveFrequencyEnd = 2500d;
+        private void MusicLineVisualDraw()
+        {
+            int hz2500index = (int)(curveFrequencyEnd / frequencyPerIndex);
+            double[] resultPaint = DftData.Take(hz2500index).ToArray();
+            Graphics g = bufferedGraphics.Graphics;
+            float
+                dataRight = resultPaint.Length, panelRight = DrawPanel.Width, panelHeight = DrawPanel.Height;
+            dftDataFilter ??= (v) => v;
+            PointF[] points = Enumerable.Range(0, resultPaint.Length).Select(i =>
+                new PointF(
+                    (int)(i / dataRight * panelRight),
+                    panelHeight - dftDataFilter((float)resultPaint[i] * curveMultiple)))
+                .ToArray();
+            g.DrawCurve(globalDrawPen, points, 1);
+        }
+
+        float circleMultiple = 0.5f;
+        float circleOffsetPerFrame = 0.1f;
+        float circleCurOffset = 0;
+        double circleFrequencyEnd = 4500d;
+        float maxOffset = 10;
+        float 
+            curOffsetX = 0,
+            curOffsetY = 0;
+        float offsetSpeed = 0.5f;
+        private void MusicCircleVisualDraw()
+        {
+            int fqEndIndex = (int)(circleFrequencyEnd / frequencyPerIndex);
+            double[] resultPaint = DftData.Take(fqEndIndex).ToArray();
+            Graphics g = bufferedGraphics.Graphics;
+            float
+                dataRight = resultPaint.Length, panelRight = DrawPanel.Width, panelHeight = DrawPanel.Height;
+            dftDataFilter ??= (v) => v;
+
+            int centerX = DrawPanel.Width / 2,
+                centerY = DrawPanel.Height / 2;
+
+            float offsetXPix = curOffsetX, offsetYPix = curOffsetY;
+            Point mouse = DrawPanel.PointToClient(MousePosition);
+
+            if (mouse.X > 0 && mouse.Y > 0 && mouse.X < DrawPanel.Width && mouse.Y < DrawPanel.Height || true)
+            {
+                double
+                    halfX = DrawPanel.Width / 2,
+                    halfY = DrawPanel.Height / 2;
+                double
+                    offsetX = (halfX - mouse.X) / halfX * maxOffset,
+                    offsetY = (halfY - mouse.Y) / halfY * maxOffset;
+
+                offsetXPix = (int)(curOffsetX + (offsetX - curOffsetX) * offsetSpeed);
+                offsetYPix = (int)(curOffsetY + (offsetY - curOffsetY) * offsetSpeed);
+
+                curOffsetX = offsetXPix;
+                curOffsetY = offsetYPix;
+            }
+
+            if (circleCurOffset > 360)
+                circleCurOffset = 0;
+            double piOffset = circleCurOffset / 360f * Math.PI * 2;
+            double radius = Math.Min(DrawPanel.Width, DrawPanel.Height) / 2d;
+            double halfradius = radius / 2;
+            double scale = resultPaint.Average() / halfradius / 1 + 1;
+            int resultPaintLength = resultPaint.Length;
+            PointF[] points = Enumerable.Range(0, resultPaintLength).Select((v) => {
+                double deg = (double)v / resultPaintLength * Math.PI * 2 + piOffset,
+                    value = dftDataFilter((float)resultPaint[v] * circleMultiple),
+                    sin = Math.Sin(deg),
+                    cos = Math.Cos(deg);
+                PointF p = new PointF(
+                    (float)(centerX + halfradius * cos * scale + value * cos) + offsetXPix,
+                    (float)(centerY + halfradius * sin * scale + value * sin) + offsetYPix);
+                return p;
+            }).ToArray();
+
+            circleCurOffset += circleOffsetPerFrame;
+
+            g.DrawClosedCurve(globalDrawPen, points);
         }
 
         /// <summary>
@@ -333,7 +421,7 @@ namespace AudioVisualizer
         /// <param name="e"></param>
         private void StartStopBtn_Click(object sender, EventArgs e)
         {
-            if (recording)
+            if (ViewModule.IsRecording)
             {
                 if (writer != null)
                     writer.Close();
@@ -354,7 +442,7 @@ namespace AudioVisualizer
                 capture.StartRecording();
             }
 
-            recording ^= true;
+            ViewModule.IsRecording ^= true;
         }
 
         OpenFileDialog ofd;
@@ -400,18 +488,18 @@ namespace AudioVisualizer
             wout.PlaybackStopped += (sender, e) => MusicNameLb.Text = "";
 
             MusicNameLb.Text = Path.GetFileNameWithoutExtension(PlayListBox.SelectedItem as string);
-            playing = true;
+            ViewModule.IsPlaying = true;
         }
 
         private void PlayOffsetBar_MouseDown(object sender, MouseEventArgs e)
         {
-            offseting = true;
+            ViewModule.IsOffseting = true;
         }
 
         private void PlayOffsetBar_MouseUp(object sender, MouseEventArgs e)
         {
             reader.CurrentTime = TimeSpan.FromMilliseconds(PlayOffsetBar.Value);
-            offseting = false;
+            ViewModule.IsOffseting = false;
         }
 
         private void PauseBtn_Click(object sender, EventArgs e)
@@ -422,9 +510,27 @@ namespace AudioVisualizer
         private void StopBtn_Click(object sender, EventArgs e)
         {
             wout?.Stop();
-            playing = false;
+            ViewModule.IsPlaying = false;
         }
 
         private void RefreshBtn_Click(object sender, EventArgs e) => InitializeCapture();
+
+        private void DrawPanel_MouseClick(object sender, MouseEventArgs e)
+        {
+            //if (e.Button.HasFlag(MouseButtons.Right))
+            //{
+            //    contextMenuStrip1.Show();
+            //}
+        }
+
+        private void contextMenuStrip1_Closed(object sender, ToolStripDropDownClosedEventArgs e)
+        {
+
+        }
+
+        private void WindowTopMost_CheckedChanged(object sender, EventArgs e)
+        {
+            this.TopMost = WindowTopMost.Checked;
+        }
     }
 }

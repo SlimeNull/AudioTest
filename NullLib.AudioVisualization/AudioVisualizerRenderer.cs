@@ -77,7 +77,7 @@ namespace NullLib.AudioVisualization
         public void RenderFrame(float[][] samples, int count)
         {
             
-            int sampleStartIndex = 
+            //int sampleStartIndex = 
         }
     }
 }
