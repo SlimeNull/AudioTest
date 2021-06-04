@@ -54,6 +54,7 @@ namespace AudioVisualizer
             this.FileNameContent = new System.Windows.Forms.Label();
             this.IsSaveFile = new System.Windows.Forms.CheckBox();
             this.MusicPlayPanel = new System.Windows.Forms.Panel();
+            this.WindowTopMost = new System.Windows.Forms.CheckBox();
             this.MusicNameLb = new System.Windows.Forms.Label();
             this.TotalTimeLb = new System.Windows.Forms.Label();
             this.CurrentTimeLb = new System.Windows.Forms.Label();
@@ -65,7 +66,7 @@ namespace AudioVisualizer
             this.PlayBtn = new System.Windows.Forms.Button();
             this.PlayOffsetBar = new System.Windows.Forms.TrackBar();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.WindowTopMost = new System.Windows.Forms.CheckBox();
+            this.captureMicrophone = new System.Windows.Forms.CheckBox();
             this.DrawPanel.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.MusicPlayPanel.SuspendLayout();
@@ -91,6 +92,7 @@ namespace AudioVisualizer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.DrawPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.DrawPanel.ContextMenuStrip = this.contextMenuStrip1;
+            this.DrawPanel.Controls.Add(this.captureMicrophone);
             this.DrawPanel.Controls.Add(this.RefreshBtn);
             this.DrawPanel.Controls.Add(this.StartBtn);
             this.DrawPanel.Controls.Add(this.FileNameContent);
@@ -298,6 +300,18 @@ namespace AudioVisualizer
             this.MusicPlayPanel.Size = new System.Drawing.Size(224, 437);
             this.MusicPlayPanel.TabIndex = 7;
             // 
+            // WindowTopMost
+            // 
+            this.WindowTopMost.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.WindowTopMost.AutoSize = true;
+            this.WindowTopMost.Location = new System.Drawing.Point(60, 413);
+            this.WindowTopMost.Name = "WindowTopMost";
+            this.WindowTopMost.Size = new System.Drawing.Size(66, 16);
+            this.WindowTopMost.TabIndex = 6;
+            this.WindowTopMost.Text = "TopMost";
+            this.WindowTopMost.UseVisualStyleBackColor = true;
+            this.WindowTopMost.CheckedChanged += new System.EventHandler(this.WindowTopMost_CheckedChanged);
+            // 
             // MusicNameLb
             // 
             this.MusicNameLb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -419,16 +433,15 @@ namespace AudioVisualizer
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
-            // WindowTopMost
+            // captureMicrophone
             // 
-            this.WindowTopMost.AutoSize = true;
-            this.WindowTopMost.Location = new System.Drawing.Point(60, 413);
-            this.WindowTopMost.Name = "WindowTopMost";
-            this.WindowTopMost.Size = new System.Drawing.Size(66, 16);
-            this.WindowTopMost.TabIndex = 6;
-            this.WindowTopMost.Text = "TopMost";
-            this.WindowTopMost.UseVisualStyleBackColor = true;
-            this.WindowTopMost.CheckedChanged += new System.EventHandler(this.WindowTopMost_CheckedChanged);
+            this.captureMicrophone.AutoSize = true;
+            this.captureMicrophone.Location = new System.Drawing.Point(5, 26);
+            this.captureMicrophone.Name = "captureMicrophone";
+            this.captureMicrophone.Size = new System.Drawing.Size(132, 16);
+            this.captureMicrophone.TabIndex = 7;
+            this.captureMicrophone.Text = "Capture Microphone";
+            this.captureMicrophone.UseVisualStyleBackColor = true;
             // 
             // MainWindow
             // 
@@ -490,6 +503,7 @@ namespace AudioVisualizer
         private System.Windows.Forms.ToolStripMenuItem offsetPerFrameToolStripMenuItem;
         private System.Windows.Forms.ToolStripTextBox circle_option_offsetPerFrame;
         private System.Windows.Forms.CheckBox WindowTopMost;
+        private System.Windows.Forms.CheckBox captureMicrophone;
     }
 }
 
